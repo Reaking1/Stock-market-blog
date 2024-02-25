@@ -12,9 +12,13 @@ export const ApiService = {
     },
 
     fetchGlobalNews: async () => {
-        const url = `${BASE_URL}/query?function=LIST&keywords=global news&apikey=${API_KEY}`;
-        const res = await axios.get(url);
-        return res.data
+        try {
+            const url = `${BASE_URL}/query?function=NEWS_SENTIMENT&apikey=${API_KEY}`;
+            const response = await axios.get(url);
+            return response.data;
+        } catch (error) {
+            throw new Error(`Error fetching global news:`);
+        }
     },
 
     fetchStockDataWeekly: async (symbol: string) => {
