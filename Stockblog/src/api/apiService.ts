@@ -4,6 +4,16 @@ import axios from "axios";
 const API_KEY = 'IBLCVK3BICIVSYJR';
 const BASE_URL = 'https://www.alphavantage.co';
 
+interface NewsItem {
+    title: string;
+    url: string;
+    summary: string;
+    bannerImage: string;
+    source: string;
+    timePublished: string;
+
+}
+
 export const ApiService = {
     fetchStockData: async (symbol: string) => {
         const url = `${BASE_URL}/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`;
@@ -11,14 +21,29 @@ export const ApiService = {
         return res.data
     },
 
-    fetchGlobalNews: async () => {
+    fetchGlobalNews: async (): Promise<NewsItem[]> => {
         try {
             const url = `${BASE_URL}/query?function=NEWS_SENTIMENT&apikey=${API_KEY}`;
-            const response = await axios.get(url);
-            return response.data;
+            const res = await axios.get(url);
+
+            //Checking if the res caontains any articles
+            if (!res.data ||!res.data.feed) {
+                throw new Error('Invaild news data format')
+            }
+            //Map the articles to the desired structure
+
+            return res.data.feed.map((article: any) => ({
+                title: article.title,
+                url: article.url,
+                summary: article.summary,
+                bannerImage: article.banner_image,
+                timePublished: article.time_published
+
+            }));
         } catch (error) {
-            throw new Error(`Error fetching global news:`);
+            throw new Error(`Error fetching global news: ${error}`);
         }
+
     },
 
     fetchStockDataWeekly: async (symbol: string) => {

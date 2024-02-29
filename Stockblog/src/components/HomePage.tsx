@@ -16,30 +16,36 @@ const HomePage: React.FC = () => {
     return <div>Error: {error} </div>
   }
 
-  return (
-      <div>
-          <h1>Home Page</h1>
-          <h2>Global News</h2>
-          <ul>
-              {news.map((item, index) => (
-                  <li key={index}>
-                      <h3>{item.title}</h3>
-                      <p>{item.description}</p>
-                  </li>
-              ))}
-          </ul>
-          <h2>Stocks</h2>
-          <ul>
-              <li>
-                  <Link to="/stock/AAPL">Apple (AAPL)</Link>
-              </li>
-              <li>
-                  <Link to="/stock/GOOGL">Google (GOOGL)</Link>
-              </li>
-              {/* Add more links for other stocks */}
-          </ul>
-      </div>
-  );
+ // Inside HomePage component
+return (
+    <div>
+        <h1>Home Page</h1>
+        <h2>Global News</h2>
+        <ul>
+                {news.map((item, index) => (
+                    <li key={index}>
+                        <h3>{item.title}</h3>
+                        <p>{item.summary}</p>
+                        <p>Source: {item.source}</p>
+                        <p>Published: {item.timePublished}</p>
+                        <img src={item.bannerImage} alt={item.title} />
+                        <a href={item.url} target="_blank" rel="noopener noreferrer">Read more</a>
+                    </li>
+                ))}
+            </ul>
+        <h2>Stocks</h2>
+        <ul>
+            <li>
+                <Link to="/stock/AAPL">Apple (AAPL)</Link>
+            </li>
+            <li>
+                <Link to="/stock/GOOGL">Google (GOOGL)</Link>
+            </li>
+            {/* Add more links for other stocks */}
+        </ul>
+    </div>
+);
+
 }
 
 export default HomePage;
