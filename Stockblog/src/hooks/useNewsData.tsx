@@ -22,7 +22,7 @@ export const useNewData = () => {
             try {
                 setLoading(true);
                 const newsData = await ApiService.fetchGlobalNews();
-                setNews(newsData);
+                setNews(newsData)
             } catch (error) {
                 setError('Error fetching global news');
             } finally {

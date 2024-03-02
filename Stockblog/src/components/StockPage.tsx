@@ -3,16 +3,27 @@ import { ApiService } from '../api/apiService';
 import { useParams } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 
-interface StockPage {
-    name: string,
-    price: number,
-}
 
+
+
+interface  StockPage {
+    name: string,
+    price: string
+}  
+
+interface StockPageHistoryItem {
+    date: string;
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+}
 
 const StockPage: React.FC = () => {
  const { symbol } = useParams<{ symbol?: string }>();
  const [stockData, setStockData] = useState<StockPage | null>(null);
- const [stockHistory, setStockHistory] = useState<number[]>([]);
+ const [stockHistory, setStockHistory] = useState<StockPageHistoryItem[]>([]);
  const [loading, setLoading] = useState<boolean>(false);
  const [error, setError] = useState<string>('') 
  
@@ -23,6 +34,7 @@ useEffect(() => {
             setLoading(true);
             const data = await ApiService.fetchStockData(symbol || '');
             setStockData(data);
+            console.log(data)
         } catch (error) {
             setError('Error fetching stock data');
         } finally {
@@ -41,6 +53,7 @@ useEffect(() => {
             setLoading(true);
             const history = await ApiService.fetchStockHistory(symbol || '', 'daily');
             setStockHistory(history);
+            console.log(history)
         } catch (error) {
             setError("Error fetching stock history");
         } finally {
@@ -67,21 +80,23 @@ useEffect(() => {
             <p>Symbol: {symbol}</p>
             {stockData && (
                 <div>
-                    <p>Name : {stockData.name} </p>
+                    <p>Da: {stockData.name} </p>
                     <p>Price: {stockData.price} </p>
                 </div>
             )}
             {stockHistory.length > 0  && (
                 <div className='stock'>
                     <Line data={{
-                        labels: ['1', '2', '3', '4', '5', '6', '7'],
-                        datasets: [
-                         { label: 'Stock Price',
-                         data: stockHistory,
-                         fill: false,
-                         backgroundColor: 'rgb(75, 192, 192)',
-                         borderColor: 'rgba(75, 192, 192, 0.2)',}
-                        ]
+                      labels: stockHistory.map(item => item.date),
+                      datasets: [
+                          {
+                              label: 'Stock Price',
+                              data: stockHistory.map(item => item.close),
+                              fill: false,
+                              backgroundColor: 'rgb(75, 192, 192)',
+                              borderColor: 'rgba(75, 192, 192, 0.2)',
+                          },
+                      ],
                     }}/>
                 </div>
             )}

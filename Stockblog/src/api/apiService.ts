@@ -14,6 +14,15 @@ interface NewsItem {
 
 }
 
+interface StockPageHistoryItem {
+    date: string,
+    open: number,
+    high: number,
+    low: number;
+    close: number,
+    volume: number
+ }
+
 export const ApiService = {
     fetchStockData: async (symbol: string) => {
         const url = `${BASE_URL}/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`;
@@ -58,7 +67,7 @@ export const ApiService = {
         return res.data
     },
 
-    fetchStockHistory: async (symbol: string, timeframe: string) => {
+    fetchStockHistory: async (symbol: string, timeframe: string): Promise<StockPageHistoryItem[]> => {
         let functionName = '';
         switch (timeframe) {
             case 'daily': 
@@ -74,8 +83,26 @@ export const ApiService = {
                 throw new Error('Invaild timeframe')
         }
         const url = `${BASE_URL}/query?function=${functionName}&symbol=${symbol}&apikey=${API_KEY}`;
-        const res = await axios.get(url)
-        return res.data
+       const res = await axios.get(url);
+       const data: StockPageHistoryItem[] = [];
+       for (const key in res.data['Time series (Daily)']) {
+        if (Object.prototype.hasOwnProperty.call(res.data['Time Series (Daily)'], key)) {
+            const item = res.data['Time series (Daily)'][key];
+            data.push({
+                date: key,
+                open: parseFloat(item['1. open']),
+                high: parseFloat(item['2. high']),
+                low: parseFloat(item['3. low']),
+                close: parseFloat(item['4. close']),
+                volume: parseFloat(item['5. volume'])
+            });
+        }
+       }
+
+       return data
+       
+
+      
     },
 
     fetchExchangeRates: async () => {
@@ -85,4 +112,4 @@ export const ApiService = {
     }
 
  
-}
+};
