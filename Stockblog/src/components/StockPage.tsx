@@ -75,7 +75,7 @@ useEffect(() => {
     return <div>Error: {error}</div>
    }
     return (
-        <div>
+        <div className='page'>
             <h1>Stock Page</h1>
             <p>Symbol: {symbol}</p>
             {stockData && (
