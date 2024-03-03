@@ -75,7 +75,7 @@ useEffect(() => {
     return <div>Error: {error}</div>
    }
     return (
-        <div className='page'>
+        <div>
             <h1>Stock Page</h1>
             <p>Symbol: {symbol}</p>
             {stockData && (
@@ -84,9 +84,8 @@ useEffect(() => {
                     <p>Price: {stockData.price} </p>
                 </div>
             )}
-            <h1>Stock data</h1>
             {stockHistory.length > 0  && (
-                <div className='stock'>
+                <div>
                   <h2>Historical Stock Data</h2>
                   <table>
                     <thead>
@@ -112,7 +111,7 @@ useEffect(() => {
                         ))}
                     </tbody>
                   </table>
-                  <div className="chart">
+                  <div>
                     <Line data={{
                         labels: stockHistory.map(item => item.date),
                         datasets: [
