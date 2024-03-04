@@ -1,5 +1,29 @@
- * {
-    margin: 0;
-    padding: 20%;
-    
+ 
+ /**Stock page*/
+ .stock-page-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   min-height: 100vh;
  }
+ 
+ .stock-page-content {
+   max-width: 800px;
+   padding: 20px;
+   margin: 0 auto;
+   text-align: center;
+ }
+ 
+ .chart-container {
+   margin-top: 20px;
+   width: 100%;
+   max-width: 800px;
+ }
+ 
+ .chart {
+   margin-top: 20px;
+ }
+ 
+
+  /**Home Page*/

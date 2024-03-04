@@ -34,7 +34,7 @@ return (
                 ))}
             </ul>
         <h2>Stocks</h2>
-        //LINKS FOR EACH STOCK
+        <h3>This section is still under construction</h3>
         <ul>
             <li>
                 <Link to="/stock/AAPL">Apple (AAPL)</Link>

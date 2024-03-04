@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ApiService } from '../api/apiService';
 import { useParams } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
-
+import '../App.css'
 
 
 
@@ -75,7 +75,8 @@ useEffect(() => {
     return <div>Error: {error}</div>
    }
     return (
-        <div>
+        <div className='stock-page-container'>
+            <div className='stock-page-content'>
             <h1>Stock Page</h1>
             <p>Symbol: {symbol}</p>
             {stockData && (
@@ -85,7 +86,7 @@ useEffect(() => {
                 </div>
             )}
             {stockHistory.length > 0  && (
-                <div>
+                <div className='chart-container'>
                   <h2>Historical Stock Data</h2>
                   <table>
                     <thead>
@@ -111,7 +112,7 @@ useEffect(() => {
                         ))}
                     </tbody>
                   </table>
-                  <div>
+                  <div className='chart'>
                     <Line data={{
                         labels: stockHistory.map(item => item.date),
                         datasets: [
@@ -127,6 +128,7 @@ useEffect(() => {
                   </div>
                 </div>
             )}
+        </div>
         </div>
         
     )
