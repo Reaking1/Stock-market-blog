@@ -14,6 +14,11 @@ interface NewsItem {
 
 }
 
+interface MarketStatus {
+    market: string;
+    status: string;
+  }
+
 interface StockPageHistoryItem {
     date: string,
     open: number,
@@ -104,12 +109,34 @@ export const ApiService = {
 
       
     },
-
+     
     fetchExchangeRates: async () => {
          const url = `${BASE_URL}/query?function=LIST&keywords=global news&apikey=${API_KEY}`;
          const res = await axios.get(url);
          return res.data
-    }
+    },
+
+    fetchMarketStatus: async (): Promise<MarketStatus[]> => {
+        try {
+          const url = `${BASE_URL}/query?function=MARKET_STATUS&apikey=${API_KEY}`;
+          const response = await axios.get(url);
+          const marketData: MarketStatus[] = [];
+    
+          // Process the response data
+          for (const market in response.data) {
+            if (Object.prototype.hasOwnProperty.call(response.data, market)) {
+              marketData.push({
+                market,
+                status: response.data[market as keyof typeof response.data],
+              });
+            }
+          }
+    
+          return marketData;
+        } catch (error) {
+          throw new Error(`Error fetching market status: ${error}`);
+        }
+      },
 
  
 };

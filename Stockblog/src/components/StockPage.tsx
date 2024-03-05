@@ -1,137 +1,57 @@
-import React, { useEffect, useState } from 'react'
+// In your StockPage.tsx component
+
+import React, { useEffect, useState } from 'react';
 import { ApiService } from '../api/apiService';
 import { useParams } from 'react-router-dom';
-import { Line } from 'react-chartjs-2';
-import '../App.css'
 
-
-
-interface  StockPage {
-    name: string,
-    price: string
-}  
-
-interface StockPageHistoryItem {
-    date: string;
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    volume: number;
+interface MarketStatus {
+  market: string;
+  status: string;
 }
 
 const StockPage: React.FC = () => {
- const { symbol } = useParams<{ symbol?: string }>();
- const [stockData, setStockData] = useState<StockPage | null>(null);
- const [stockHistory, setStockHistory] = useState<StockPageHistoryItem[]>([]);
- const [loading, setLoading] = useState<boolean>(false);
- const [error, setError] = useState<string>('') 
- 
+  const { symbol } = useParams<{ symbol?: string }>();
+  const [marketStatus, setMarketStatus] = useState<MarketStatus[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
-useEffect(() => {
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const data = await ApiService.fetchStockData(symbol || '');
-            setStockData(data);
-            console.log(data)
-        } catch (error) {
-            setError('Error fetching stock data');
-        } finally {
-            setLoading(false)
-        }
+  useEffect(() => {
+    const fetchMarketStatus = async () => {
+      try {
+        setLoading(true);
+        const marketData = await ApiService.fetchMarketStatus();
+        setMarketStatus(marketData);
+      } catch (error) {
+        setError('Error fetching market status');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if(symbol) {
-        fetchData();
-    }
-}, [symbol]);
+    fetchMarketStatus();
+  }, []);
 
-   useEffect(() =>  {
-    const fetchHistory = async () => {
-        try {
-            setLoading(true);
-            const history = await ApiService.fetchStockHistory(symbol || '', 'daily');
-            setStockHistory(history);
-            console.log(history)
-        } catch (error) {
-            setError("Error fetching stock history");
-        } finally {
-            setLoading(false)
-        }
-    };
-
-    if (symbol) {
-        fetchHistory();
-    }
-
-   }, [symbol]);
-
-   if (loading) {
+  if (loading) {
     return <div>Loading...</div>;
-   }
+  }
 
-   if(error) {
-    return <div>Error: {error}</div>
-   }
-    return (
-        <div className='stock-page-container'>
-            <div className='stock-page-content'>
-            <h1>Stock Page</h1>
-            <p>Symbol: {symbol}</p>
-            {stockData && (
-                <div>
-                    <p>Date: {stockData.name} </p>
-                    <p>Price: {stockData.price} </p>
-                </div>
-            )}
-            {stockHistory.length > 0  && (
-                <div className='chart-container'>
-                  <h2>Historical Stock Data</h2>
-                  <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Open</th>
-                            <th>High</th>
-                            <th>Low</th>
-                            <th>Close</th>
-                            <th>Volume</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {stockHistory.map(item => (
-                            <tr key={item.date}>
-                                <td>{item.date}</td>
-                                <td>{item.open}</td>
-                                <td>{item.high}</td>
-                                <td>{item.low}</td>
-                                <td>{item.close}</td>
-                                <td>{item.volume}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                  <div className='chart'>
-                    <Line data={{
-                        labels: stockHistory.map(item => item.date),
-                        datasets: [
-                            {
-                                label: 'Stock Price',
-                                data: stockHistory.map(item => item.close),
-                                fill: false,
-                                backgroundColor: 'rgb(75,92, 193)',
-                                borderColor: 'rgba(75, 192, 192,0.2)'
-                            }
-                        ]
-                    }} />
-                  </div>
-                </div>
-            )}
-        </div>
-        </div>
-        
-    )
-}
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-export default StockPage
+  return (
+    <div>
+      <h1>Market Status</h1>
+      <p>Symbol: {symbol}</p>
+      <ul>
+        {marketStatus.map((status, index) => (
+          <li key={index}>
+            {status.market}: {status.status}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default StockPage;
