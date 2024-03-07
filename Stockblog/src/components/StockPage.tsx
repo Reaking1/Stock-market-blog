@@ -1,12 +1,15 @@
-// In your StockPage.tsx component
-
 import React, { useEffect, useState } from 'react';
 import { ApiService } from '../api/apiService';
 import { useParams } from 'react-router-dom';
 
 interface MarketStatus {
-  market: string;
-  status: string;
+  region: string;
+  market_type: string;
+  primary_exchange: string;
+  local_close: string;
+  local_open: string;
+  current_status: string;
+  notes: string;
 }
 
 const StockPage: React.FC = () => {
@@ -21,6 +24,7 @@ const StockPage: React.FC = () => {
         setLoading(true);
         const marketData = await ApiService.fetchMarketStatus();
         setMarketStatus(marketData);
+        console.log(marketData);
       } catch (error) {
         setError('Error fetching market status');
       } finally {
@@ -46,7 +50,7 @@ const StockPage: React.FC = () => {
       <ul>
         {marketStatus.map((status, index) => (
           <li key={index}>
-            {status.market}: {status.status}
+            {status.region}: {status.current_status}
           </li>
         ))}
       </ul>

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 
+
 const API_KEY = 'IBLCVK3BICIVSYJR';
 const BASE_URL = 'https://www.alphavantage.co';
 
@@ -15,8 +16,14 @@ interface NewsItem {
 }
 
 interface MarketStatus {
-    market: string;
-    status: string;
+    region: string,
+    market_type: string
+    primary_exchange: string,
+    local_close: string,
+    local_open: string,
+    current_status: string,
+    notes: string
+
   }
 
 interface StockPageHistoryItem {
@@ -119,19 +126,23 @@ export const ApiService = {
     fetchMarketStatus: async (): Promise<MarketStatus[]> => {
         try {
           const url = `${BASE_URL}/query?function=MARKET_STATUS&apikey=${API_KEY}`;
-          const response = await axios.get(url);
+          const res = await axios.get(url);
           const marketData: MarketStatus[] = [];
     
-          // Process the response data
-          for (const market in response.data) {
-            if (Object.prototype.hasOwnProperty.call(response.data, market)) {
-              marketData.push({
-                market,
-                status: response.data[market as keyof typeof response.data],
-              });
+         for(const marketType in res.data['market_status']) {
+            if(Object.prototype.hasOwnProperty.call(res.data['market_status'], marketType)) {
+                const marketStatus = res.data['market_status'][marketType];
+                marketData.push({
+                    market_type: marketType,
+                    region: marketStatus['Region'],
+                    primary_exchange: marketStatus['Primary Exchanges'],
+                    local_close: marketStatus['Local Close'],
+                    local_open: marketStatus['Local Open'],
+                    current_status: marketStatus['Current Status'],
+                    notes: marketStatus['Notes']
+                })
             }
-          }
-    
+         }
           return marketData;
         } catch (error) {
           throw new Error(`Error fetching market status: ${error}`);
