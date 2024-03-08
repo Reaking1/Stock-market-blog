@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 interface MarketStatus {
   region: string;
   market_type: string;
-  primary_exchange: string;
+  primary_exchanges: string;
   local_close: string;
   local_open: string;
   current_status: string;

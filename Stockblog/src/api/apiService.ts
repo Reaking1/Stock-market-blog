@@ -18,7 +18,7 @@ interface NewsItem {
 interface MarketStatus {
     region: string,
     market_type: string
-    primary_exchange: string,
+    primary_exchanges: string,
     local_close: string,
     local_open: string,
     current_status: string,
@@ -131,16 +131,17 @@ export const ApiService = {
     
          for(const marketType in res.data['market_status']) {
             if(Object.prototype.hasOwnProperty.call(res.data['market_status'], marketType)) {
-                const marketStatus = res.data['market_status'][marketType];
-                marketData.push({
-                    market_type: marketType,
-                    region: marketStatus['Region'],
-                    primary_exchange: marketStatus['Primary Exchanges'],
-                    local_close: marketStatus['Local Close'],
-                    local_open: marketStatus['Local Open'],
-                    current_status: marketStatus['Current Status'],
-                    notes: marketStatus['Notes']
-                })
+                for (const marketStatus of res.data.markets) {
+                    marketData.push({
+                      market_type: marketStatus.market_type,
+                      region: marketStatus.region,
+                      primary_exchanges: marketStatus.primary_exchanges,
+                      local_close: marketStatus.local_close,
+                      local_open: marketStatus.local_open,
+                      current_status: marketStatus.current_status,
+                      notes: marketStatus.notes,
+                    });
+                  }
             }
          }
           return marketData;
